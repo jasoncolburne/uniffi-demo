@@ -22,7 +22,7 @@ interface WrappingClass {
         optional sequence<u8>? data = null
     );
 
-    Class wrapped();
+    Class inner();
 
     [Throws=Error]
     void explode();

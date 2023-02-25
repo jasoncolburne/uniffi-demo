@@ -36,9 +36,13 @@ pub trait ClassLike: Creation + Exposed {
             return err!(Error::Common("must specify class or data".to_string()))
         }
     }
+
+    fn inner(&self) -> Class {
+        self.wrapped()
+    }
 }
 
-pub(crate) trait Uniffi: ClassLike {
+pub trait Uniffi: Creation + Exposed {
     fn new(
         wrapped: Option<std::sync::Arc<Class>>,
         kind: Option<String>,
@@ -55,8 +59,9 @@ pub(crate) trait Uniffi: ClassLike {
         }
     }
 
-    fn wrapped(&self) -> std::sync::Arc<Class> {
-        std::sync::Arc::new(<Self as Exposed>::wrapped(self))
+    fn inner(&self) -> std::sync::Arc<Class> {
+        let wrapped = self.wrapped();
+        std::sync::Arc::new(wrapped)
     }
 }
 

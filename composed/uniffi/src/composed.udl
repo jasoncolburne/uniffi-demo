@@ -1,0 +1,23 @@
+namespace composed {
+};
+
+[Error]
+enum Error {
+    "Common",
+    "External",
+};
+
+[ExternalInterface="base"]
+typedef extern WrappingClass;
+
+// [ExternalInterface="base"]
+// typedef extern Class;
+
+interface Composed {
+    [Throws=Error]
+    constructor(
+        [ByRef] string kind,
+        u32 size,
+        [ByRef] sequence<u8> data 
+    );
+};
