@@ -1,8 +1,8 @@
 rust:
-	@cargo build --release
+	@cargo build --release -q
 
 uniffi-build:
-	@cd uniffi && cargo build --release
+	@cd uniffi && cargo build --release -q
 
 python: uniffi-build
 	@cd uniffi && cargo run --release --bin uniffi-bindgen generate src/base.udl --out-dir generated --language $@
