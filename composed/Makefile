@@ -1,5 +1,8 @@
+rust:
+	@cargo build --release
+
 uniffi-build:
-	@cd uniffi && cargo build --release -q
+	@cd uniffi && cargo build --release
 
 python: uniffi-build
 	@cd uniffi && cargo run --release --bin uniffi-bindgen generate src/composed.udl --out-dir generated --language $@

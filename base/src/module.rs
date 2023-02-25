@@ -21,7 +21,7 @@ pub trait Exposed {
     fn wrapped(&self) -> Class;
 }
 
-pub trait ClassLike: Creation + Exposed {
+pub trait WrappingClassLike: Creation + Exposed {
     fn new(
         wrapped: Option<&Class>,
         kind: Option<&str>,
@@ -108,5 +108,5 @@ impl Creation for WrappingClass {
     }
 }
 
-impl ClassLike for WrappingClass {}
+impl WrappingClassLike for WrappingClass {}
 impl Uniffi for WrappingClass {}

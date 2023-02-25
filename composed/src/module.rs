@@ -6,6 +6,33 @@ pub struct Composed {
     clone: WrappingClass
 }
 
+#[cfg(not(feature = "uniffi"))]
+impl Composed {
+    pub fn new(kind: &str, size: u32, data: &[u8]) -> Result<Composed> {
+        let original = WrappingClass::new(None, Some(kind), Some(size), Some(data))?;
+        let clone = WrappingClass::new(Some(&original.inner()), None, None, None)?;
+
+        Ok(Composed { original, clone })
+    }
+
+    pub fn original(&self) -> WrappingClass {
+        self.original.clone()
+    }
+
+    pub fn clone(&self) -> WrappingClass {
+        self.clone.clone()
+    }
+
+    pub fn compare(&self, wrapping: Option<&WrappingClass>) -> bool {
+        if let Some(wrapping) = wrapping {
+            return wrapping.inner() == self.original().inner()
+        } else {
+            false
+        }
+    }
+}
+
+#[cfg(feature = "uniffi")]
 impl Composed {
     pub fn new(kind: &str, size: u32, data: &[u8]) -> Result<Composed> {
         let original = WrappingClass::new(None, Some(kind.to_string()), Some(size), Some(data.to_vec()))?;
@@ -30,3 +57,4 @@ impl Composed {
         }
     }
 }
+

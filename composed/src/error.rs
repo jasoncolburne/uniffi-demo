@@ -9,11 +9,11 @@ pub enum Error {
     Common(String)
 }
 
-macro_rules! err {
-    ($e:expr) => {
-        Err(Box::new($e))
-    };
-}
+// macro_rules! err {
+//     ($e:expr) => {
+//         Err(Box::new($e))
+//     };
+// }
 
 impl From<BoxedError> for Error {
     fn from(boxed: BoxedError) -> Error {
@@ -21,4 +21,4 @@ impl From<BoxedError> for Error {
     }
 }
 
-pub(crate) use err;
+// pub(crate) use err;

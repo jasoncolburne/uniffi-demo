@@ -10,9 +10,6 @@ enum Error {
 [ExternalInterface="base"]
 typedef extern WrappingClass;
 
-// [ExternalInterface="base"]
-// typedef extern Class;
-
 interface Composed {
     [Throws=Error]
     constructor(
@@ -20,4 +17,9 @@ interface Composed {
         u32 size,
         [ByRef] sequence<u8> data 
     );
+
+    WrappingClass original();
+    WrappingClass clone();
+
+    boolean compare(optional WrappingClass? wrapping = null);
 };
