@@ -14,3 +14,4 @@ python-shell: python
 clean:
 	@cargo clean
 	@cd uniffi && cargo clean
+	@rm -rf uniffi/generated

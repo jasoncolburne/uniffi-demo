@@ -15,7 +15,7 @@ interface Class {
 interface WrappingClass {
     [Throws=Error]
     constructor(
-        Class class
+        optional Class class
     );
 
     Class class();

@@ -27,8 +27,13 @@ pub trait ClassLike: Creation + Exposed {
 }
 
 pub(crate) trait Uniffi: ClassLike {
-    fn new(class: std::sync::Arc<Class>) -> Result<Self> where Self: Sized {
-        <Self as ClassLike>::new(Some(&class))
+    fn new(class: Option<std::sync::Arc<Class>>) -> Result<Self> where Self: Sized {
+        if let Some(class) = class {
+            let class = (*class).clone();
+            <Self as ClassLike>::new(Some(&class))
+        } else {
+            <Self as ClassLike>::new(None)
+        }
     }
 
     fn class(&self) -> std::sync::Arc<Class> {
