@@ -1,0 +1,25 @@
+namespace composed {
+};
+
+[Error]
+enum Error {
+    "Common",
+    "External",
+};
+
+[ExternalInterface="base"]
+typedef extern WrappingClass;
+
+interface Composed {
+    [Throws=Error]
+    constructor(
+        [ByRef] string kind,
+        u32 size,
+        [ByRef] sequence<u8> data 
+    );
+
+    WrappingClass original();
+    WrappingClass clone();
+
+    boolean compare(optional WrappingClass? wrapping = null);
+};

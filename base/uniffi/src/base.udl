@@ -1,0 +1,29 @@
+namespace base {
+};
+
+[Error]
+enum Error {
+    "Common",
+    "External",
+};
+
+interface Class {
+    string kind();
+    u32 size();
+    sequence<u8> data();
+};
+
+interface WrappingClass {
+    [Throws=Error]
+    constructor(
+        optional Class? wrapped = null,
+        optional string? kind = null,
+        optional u32? size = null,
+        optional sequence<u8>? data = null
+    );
+
+    Class inner();
+
+    [Throws=Error]
+    void explode();
+};
