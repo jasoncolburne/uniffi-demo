@@ -4,6 +4,7 @@ namespace base {
 [Error]
 enum Error {
     "Common",
+    "External",
 };
 
 interface Class {
@@ -15,10 +16,13 @@ interface Class {
 interface WrappingClass {
     [Throws=Error]
     constructor(
-        optional Class class
+        optional Class? wrapped = null,
+        optional string? kind = null,
+        optional u32? size = null,
+        optional sequence<u8>? data = null
     );
 
-    Class class();
+    Class wrapped();
 
     [Throws=Error]
     void explode();

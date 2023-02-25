@@ -13,31 +13,50 @@ pub struct WrappingClass {
 }
 
 pub trait Creation {
-    fn create(class: Option<&Class>) -> Result<Self> where Self: Sized;
+    fn new_with_class(class: &Class) -> Result<Self> where Self: Sized;
+    fn new_with_data(kind: &str, size: u32, data: &[u8]) -> Result<Self> where Self: Sized;
 }
 
 pub trait Exposed {
-    fn class(&self) -> Class;
+    fn wrapped(&self) -> Class;
 }
 
 pub trait ClassLike: Creation + Exposed {
-    fn new(class: Option<&Class>) -> Result<Self> where Self: Sized {
-        Self::create(class)
+    fn new(
+        wrapped: Option<&Class>,
+        kind: Option<&str>,
+        size: Option<u32>,
+        data: Option<&[u8]>,
+    ) -> Result<Self> where Self: Sized {
+        if let Some(class) = wrapped {
+            Self::new_with_class(class)
+        } else if kind.is_some() && size.is_some() && data.is_some() {
+            Self::new_with_data(kind.unwrap(), size.unwrap(), data.unwrap())
+        } else {
+            return err!(Error::Common("must specify class or data".to_string()))
+        }
     }
 }
 
 pub(crate) trait Uniffi: ClassLike {
-    fn new(class: Option<std::sync::Arc<Class>>) -> Result<Self> where Self: Sized {
-        if let Some(class) = class {
+    fn new(
+        wrapped: Option<std::sync::Arc<Class>>,
+        kind: Option<String>,
+        size: Option<u32>,
+        data: Option<Vec<u8>>,
+    ) -> Result<Self> where Self: Sized {
+        if let Some(class) = wrapped {
             let class = (*class).clone();
-            <Self as ClassLike>::new(Some(&class))
+            Self::new_with_class(&class)
+        } else if kind.is_some() && size.is_some() && data.is_some() {
+            Self::new_with_data(&kind.unwrap(), size.unwrap(), &data.unwrap())
         } else {
-            <Self as ClassLike>::new(None)
+            return err!(Error::Common("must specify class or data".to_string()))
         }
     }
 
-    fn class(&self) -> std::sync::Arc<Class> {
-        std::sync::Arc::new(<Self as Exposed>::class(self))
+    fn wrapped(&self) -> std::sync::Arc<Class> {
+        std::sync::Arc::new(<Self as Exposed>::wrapped(self))
     }
 }
 
@@ -63,19 +82,23 @@ impl Class {
 
 impl WrappingClass {
     pub fn explode(&self) -> Result<()> {
-        err!(Error::Common("generic error".to_string()))
+        err!(Error::Common("explosion!".to_string()))
     }
 }
 
 impl Exposed for WrappingClass {
-    fn class(&self) -> Class {
+    fn wrapped(&self) -> Class {
         self.class.clone()
     }
 }
 
 impl Creation for WrappingClass {
-    fn create(class: Option<&Class>) -> Result<Self> {
-        let class = class.map_or(Class::default(), |class| class.clone());
+    fn new_with_class(class: &Class) -> Result<Self> {
+        Ok(WrappingClass { class: class.clone() })
+    }
+
+    fn new_with_data(kind: &str, size: u32, data: &[u8]) -> Result<Self> {
+        let class = Class { kind: kind.to_string(), size, data: data.to_vec() };
         Ok(WrappingClass { class })
     }
 }
